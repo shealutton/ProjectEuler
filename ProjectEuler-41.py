@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# USE PYTHON 2.7!
+
 '''We shall say that an n-digit number is pandigital if it makes use of all the digits 1 to n exactly once.
 For example, 2143 is a 4-digit pandigital and is also prime.
 
@@ -8,32 +11,48 @@ What is the largest n-digit pandigital prime that exists?'''
 
 #1 find all primes 2-987,654,321 using the sieve of Erath
 
-potential_prime_dict = {}
-prime_dict = {2:None, 3:None, 5:None}
-#for number in range(3, 987654322, 2):  # Populate the dict with every number 1 - X
-for number in range(3, 1000000, 2):  # Populate the dict with every number 1 - X
-    if not number % 3 == 0 and not number % 5 == 0:
-        potential_prime_dict[number] = None
+import sys
 
-print(len(potential_prime_dict))
 
-print("Starting prime calculation")
-while potential_prime_dict:
-    smallest = min(potential_prime_dict)
-    prime_dict[smallest] = 0
-    delete_list = []
-    for key in potential_prime_dict:
-        if key % smallest == 0:
-            delete_list.append(key)
+def rwh_primes2(n):
+    # http://stackoverflow.com/questions/2068372/fastest-way-to-list-all-primes-below-n-in-python/3035188#3035188
+    """ Input n>=6, Returns a list of primes, 2 <= p < n """
+    correction = (n%6>1)
+    n = {0: n, 1: n-1, 2: n+4, 3: n+3, 4: n+2, 5: n+1}[n%6]
+    sieve = [True] * (n/3)
+    sieve[0] = False
+    for i in xrange(int(n**0.5)/3+1):
+      if sieve[i]:
+        k=3*i+1|1
+        sieve[      ((k*k)/3)      ::2*k]=[False]*((n/6-(k*k)/6-1)/k+1)
+        sieve[(k*k+4*k-2*k*(i&1))/3::2*k]=[False]*((n/6-(k*k+4*k-2*k*(i&1))/6-1)/k+1)
+    return [2,3] + [3*i+1|1 for i in xrange(1,n/3-correction) if sieve[i]]
 
-    for item in delete_list:
-        potential_prime_dict.__delitem__(item)
 
-print(len(prime_dict))
-outfile = open('first-100mm-primes.txt', 'w')
-for key in sorted(prime_dict.keys()):
-    string = str(key) + '\n'
-    outfile.write(string)
+L = rwh_primes2(987654322)
+#L = rwh_primes2(100000000)
+#outfile = open('temp-primes.txt', 'w')
+#for item in L:
+#    string = str(item) + '\n'
+#    outfile.write(string)#
 
-outfile.flush()
-outfile.close()
+#outfile.flush()
+#outfile.close()
+
+while True:
+    prime = L.pop()
+    string = sorted(str(prime))
+    length = len(string) + 1
+    pandigital = True
+    for digit in range(1, length):
+        #print(prime, digit, int(string[digit - 1]))
+        if not digit == int(string[digit - 1]):
+            pandigital = False
+            break
+    if pandigital:
+        print(prime)
+        sys.exit(0)
+
+
+
+
