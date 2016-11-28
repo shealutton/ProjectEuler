@@ -9,8 +9,23 @@ in the numerator and denominator.
 If the product of these four fractions is given in its lowest common terms, find the value of the denominator.'''
 
 counter = 1
+answer = 1
 for numerator in range(10, 100):
     for denominator in range(numerator + 1, 100):
-        print(numerator, denominator, numerator / denominator)
-
         real_answer = numerator / denominator
+        numerator_ones = numerator % 10
+        numerator_tens = numerator // 10
+        denominator_ones = denominator % 10
+        denominator_tens = denominator // 10
+
+        try:
+            if numerator_ones > 0:
+                if numerator_ones == denominator_tens:
+                    if numerator_tens / denominator_ones == real_answer:
+                        print(numerator, denominator, real_answer)
+                        answer *= real_answer
+        except ZeroDivisionError:
+            pass
+
+print(round(answer,4))
+# the value of the denominator of .01 == 100. 100 is the answer.
