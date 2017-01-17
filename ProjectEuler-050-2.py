@@ -7,6 +7,8 @@ The longest sum of consecutive primes below one-thousand that adds to a prime, c
 
 Which prime, below one-million, can be written as the sum of the most consecutive primes?'''
 
+import collections
+
 
 def prime_generator(limit):
     factors = [0] * limit
@@ -41,16 +43,18 @@ sys.exit(0)
 
 winner = (0, 0)
 length = len(p)
+dq = collections.deque(p[0:546])
+print(sum(dq))
 for counter in range(length):
-    x = p[counter:546]  # 546 is the longest list (0-546) that sum to less than 1mm
-    while x:
-        if sum(x) in p:  # If the sum of the new list is prime, then that is the max number of terms
-            if len(x) > winner[1]:
-                winner = (sum(x), len(x), x)
+    while dq:
+        if sum(dq) in p:  # If the sum of the new list is prime, then that is the max number of terms
+            if len(dq) > winner[1]:
+                winner = (sum(dq), len(dq), dq)
                 break
             else:
                 break
         else:
-            junk = x.pop()
+            junk = dq.pop()
+    junk = dq.popleft()
 
 print('Final', winner)

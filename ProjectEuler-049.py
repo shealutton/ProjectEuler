@@ -5,5 +5,42 @@ There are no arithmetic sequences made up of three 1-, 2-, or 3-digit primes, ex
 one other 4-digit increasing sequence.
 
 What 12-digit number do you form by concatenating the three terms in this sequence?'''
+import sys
 
+
+def prime_generator(limit):
+    factors = [0] * limit
+    for num in range(2, limit):
+        if factors[num] == 0:
+            # Then num must be prime
+            multiple = num
+            while multiple < limit:
+                factors[multiple] += 1
+                multiple += num
+            yield num
+
+
+def permutations(a, b, c):
+    if a == 1487 and b == 4817 and c == 8147:
+        pass
+    elif sorted(str(a)) ==  sorted(str(b)) and sorted(str(c)) ==  sorted(str(b)):
+        print(a, b, c, '{0}{1}{2}'.format(a, b, c))
+        sys.exit(0)
+
+
+x = prime_generator(10000)
+p = {}
+for prime in x:
+    if prime > 1000:
+        p[prime] = None
+
+for outer in p:
+    for inner in p:
+        if inner == outer:
+            pass
+        else:
+            delta = outer - inner
+            if delta > 0:
+                if outer + delta in p:
+                    permutations(inner, outer, outer + delta)
 
